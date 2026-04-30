@@ -1,0 +1,91 @@
+name: FX Daily Paper Trade
+
+on:
+  workflow_dispatch:
+
+  # GitHub Actions の cron は UTC
+  # JST 16:15 = UTC 07:15
+  schedule:
+    - cron: "15 7 * * 1-5"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fx-daily-paper
+  cancel-in-progress: false
+
+jobs:
+  fx-daily-paper:
+    runs-on: ubuntu-latest
+
+    env:
+      TZ: Asia/Tokyo
+      PYTHONIOENCODING: utf-8
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas numpy yfinance
+
+      - name: Check files
+        run: |
+          test -f fx_v810_dual_daily_signal.py
+          test -f fx_v811_paper_trade.py
+
+      - name: Syntax check
+        run: |
+          python -m py_compile fx_v810_dual_daily_signal.py
+          python -m py_compile fx_v811_paper_trade.py
+
+      - name: Run daily signal
+        run: |
+          python fx_v810_dual_daily_signal.py
+
+      - name: Run paper trade
+        run: |
+          python fx_v811_paper_trade.py
+
+      - name: Show generated files
+        run: |
+          ls -la
+          echo "---- candidates ----"
+          test -f fx_v810_daily_candidates.csv && cat fx_v810_daily_candidates.csv || true
+          echo "---- positions ----"
+          test -f fx_v811_positions.csv && cat fx_v811_positions.csv || true
+          echo "---- trades ----"
+          test -f fx_v811_trades.csv && cat fx_v811_trades.csv || true
+          echo "---- report ----"
+          test -f fx_v811_daily_report.csv && cat fx_v811_daily_report.csv || true
+
+      - name: Commit paper trade state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -f \
+            fx_v810_daily_candidates.csv \
+            fx_v810_daily_summary.csv \
+            fx_v811_positions.csv \
+            fx_v811_trades.csv \
+            fx_v811_equity.csv \
+            fx_v811_daily_report.csv
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update FX paper trade state [skip ci]"
+            git push
+          fi

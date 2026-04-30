@@ -1,0 +1,2 @@
+signal_date,pair,side,close,ma,atr,prev_high,prev_low,stop_ref,next_action,breakout_days,ma_days,atr_days,atr_mult,max_hold_days
+2026-04-30,USDJPY=X,LONG,160.68499755859375,153.92432441711426,0.8409314836774554,160.28799438476562,157.61199951171875,159.42360033307756,next open entry candidate,20,200,14,1.5,20
