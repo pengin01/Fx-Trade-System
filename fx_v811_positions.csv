@@ -1,2 +1,0 @@
-status,strategy,param_name,pair,side,signal_date,entry_date,entry_price,position_fraction,initial_stop,current_stop,highest_high,lowest_low,signal_atr,tp_price,sl_price,last_checked_date,opened_at,updated_at,pullback_pct,tp_pct,sl_pct,hold_days,rsi_long_max,rsi_short_min,breakout_days,ma_days,atr_days,atr_mult,max_hold_days,note
-PENDING,V800_ATR_TREND,V800_fixed_usdjpy_gbpusd,USDJPY=X,LONG,2026-04-30,,,1.0,159.515876,159.515876,160.524994,,0.840931,,,,,2026-04-30 16:10:14,,,,0,0,0,60,200,14,1.2,20,created from v810 candidate
