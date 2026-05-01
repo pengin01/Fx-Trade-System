@@ -1,0 +1,1 @@
+strategy,param_name,signal_date,pair,side,close,ma,rsi,atr,prev_high,prev_low,tp_ref,sl_ref,stop_ref,entry_rule,exit_rule,position_fraction,note
