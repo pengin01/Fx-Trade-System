@@ -8,7 +8,6 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
-
 # =========================================================
 # FX PAPER TRADE v811
 # =========================================================
@@ -51,7 +50,7 @@ import yfinance as yf
 START = "2018-01-01"
 END = None
 
-INITIAL_EQUITY = 100_000
+INITIAL_EQUITY = 200_00
 
 CANDIDATES_FILE = "fx_v810_daily_candidates.csv"
 
@@ -84,7 +83,7 @@ DEFAULT_SPREAD_PIPS = 0.5
 # =========================================================
 
 POSITION_COLUMNS = [
-    "status",                 # PENDING / OPEN
+    "status",  # PENDING / OPEN
     "strategy",
     "param_name",
     "pair",
@@ -93,23 +92,19 @@ POSITION_COLUMNS = [
     "entry_date",
     "entry_price",
     "position_fraction",
-
     # V800 stop/trailing
     "initial_stop",
     "current_stop",
     "highest_high",
     "lowest_low",
     "signal_atr",
-
     # V700 TP/SL
     "tp_price",
     "sl_price",
-
     # management
     "last_checked_date",
     "opened_at",
     "updated_at",
-
     # params
     "pullback_pct",
     "tp_pct",
@@ -122,7 +117,6 @@ POSITION_COLUMNS = [
     "atr_days",
     "atr_mult",
     "max_hold_days",
-
     "note",
 ]
 
@@ -200,10 +194,10 @@ STRING_COLUMNS = {
 }
 
 
-
 # =========================================================
 # UTILS
 # =========================================================
+
 
 def now_str() -> str:
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -336,6 +330,7 @@ def current_equity_from_trades(trades_df: pd.DataFrame) -> float:
 # DATA FETCH / INDICATORS
 # =========================================================
 
+
 def normalize_price_df(df: pd.DataFrame, pair: str) -> pd.DataFrame:
     if df is None or df.empty:
         return pd.DataFrame()
@@ -397,7 +392,9 @@ def fetch_pair(pair: str) -> pd.DataFrame:
         df = df[~df.index.duplicated(keep="last")]
 
     if not df.empty:
-        print(f"[LATEST] {pair}: {df.index[-1].date()} open={float(df['Open'].iloc[-1]):.6f}")
+        print(
+            f"[LATEST] {pair}: {df.index[-1].date()} open={float(df['Open'].iloc[-1]):.6f}"
+        )
 
     return df
 
@@ -419,7 +416,9 @@ def calc_atr(df: pd.DataFrame, window: int) -> pd.Series:
     return atr
 
 
-def make_v800_features(df: pd.DataFrame, ma_days: int, atr_days: int, breakout_days: int) -> pd.DataFrame:
+def make_v800_features(
+    df: pd.DataFrame, ma_days: int, atr_days: int, breakout_days: int
+) -> pd.DataFrame:
     out = df.copy()
 
     out["ma"] = out["Close"].rolling(ma_days).mean()
@@ -436,6 +435,7 @@ def make_v800_features(df: pd.DataFrame, ma_days: int, atr_days: int, breakout_d
 # =========================================================
 # LOAD CANDIDATES
 # =========================================================
+
 
 def load_candidates() -> pd.DataFrame:
     if not os.path.exists(CANDIDATES_FILE):
@@ -459,6 +459,7 @@ def load_candidates() -> pd.DataFrame:
 # =========================================================
 # POSITION MANAGEMENT
 # =========================================================
+
 
 def has_existing_position_or_order(
     positions_df: pd.DataFrame,
@@ -523,11 +524,15 @@ def add_pending_orders(
             continue
 
         if has_same_signal(positions_df, strategy, pair, side, signal_date):
-            print(f"[SKIP] same signal already exists: {strategy} {pair} {side} {signal_date}")
+            print(
+                f"[SKIP] same signal already exists: {strategy} {pair} {side} {signal_date}"
+            )
             continue
 
         if has_existing_position_or_order(positions_df, strategy, pair, side):
-            print(f"[SKIP] active position/order already exists: {strategy} {pair} {side}")
+            print(
+                f"[SKIP] active position/order already exists: {strategy} {pair} {side}"
+            )
             continue
 
         position_fraction = get_float(cand, "position_fraction", 1.0)
@@ -542,38 +547,38 @@ def add_pending_orders(
             "entry_date": "",
             "entry_price": np.nan,
             "position_fraction": position_fraction,
-
             "initial_stop": get_float(cand, "stop_ref", np.nan),
             "current_stop": get_float(cand, "stop_ref", np.nan),
-            "highest_high": get_float(cand, "close", np.nan) if side == "LONG" else np.nan,
-            "lowest_low": get_float(cand, "close", np.nan) if side == "SHORT" else np.nan,
+            "highest_high": (
+                get_float(cand, "close", np.nan) if side == "LONG" else np.nan
+            ),
+            "lowest_low": (
+                get_float(cand, "close", np.nan) if side == "SHORT" else np.nan
+            ),
             "signal_atr": get_float(cand, "atr", np.nan),
-
             "tp_price": np.nan,
             "sl_price": np.nan,
-
             "last_checked_date": "",
             "opened_at": "",
             "updated_at": now_str(),
-
             "pullback_pct": get_float(cand, "pullback_pct", np.nan),
             "tp_pct": get_float(cand, "tp_pct", np.nan),
             "sl_pct": get_float(cand, "sl_pct", np.nan),
             "hold_days": get_int(cand, "hold_days", 0),
             "rsi_long_max": get_int(cand, "rsi_long_max", 0),
             "rsi_short_min": get_int(cand, "rsi_short_min", 0),
-
             "breakout_days": get_int(cand, "breakout_days", 0),
             "ma_days": get_int(cand, "ma_days", 0),
             "atr_days": get_int(cand, "atr_days", 0),
             "atr_mult": get_float(cand, "atr_mult", np.nan),
             "max_hold_days": get_int(cand, "max_hold_days", 0),
-
             "note": "created from v810 candidate",
         }
 
         new_orders.append(order)
-        positions_df = pd.concat([positions_df, pd.DataFrame([order])], ignore_index=True)
+        positions_df = pd.concat(
+            [positions_df, pd.DataFrame([order])], ignore_index=True
+        )
 
         print(f"[NEW PENDING] {strategy} {pair} {side} signal={signal_date}")
 
@@ -660,7 +665,9 @@ def process_pending_entries(
         opened_row = positions_df.loc[idx].to_dict()
         opened.append(opened_row)
 
-        print(f"[OPEN] {strategy} {pair} {side} entry_date={entry_date.date()} entry_price={entry_price}")
+        print(
+            f"[OPEN] {strategy} {pair} {side} entry_date={entry_date.date()} entry_price={entry_price}"
+        )
 
     return positions_df, opened
 
@@ -855,7 +862,9 @@ def process_open_v800_position(
     if not math.isfinite(atr_mult) or atr_mult <= 0:
         return None, pos.to_dict()
 
-    feat = make_v800_features(raw_df, ma_days=ma_days, atr_days=atr_days, breakout_days=breakout_days)
+    feat = make_v800_features(
+        raw_df, ma_days=ma_days, atr_days=atr_days, breakout_days=breakout_days
+    )
 
     post_entry = feat[feat.index >= pd.Timestamp(entry_date)]
 
@@ -1063,17 +1072,22 @@ def process_open_positions(
 # EQUITY / REPORT
 # =========================================================
 
+
 def make_equity_log(trades_df: pd.DataFrame) -> pd.DataFrame:
     equity = current_equity_from_trades(trades_df)
     realized_pnl = equity - INITIAL_EQUITY
     trade_count = 0 if trades_df.empty else len(trades_df)
 
-    return pd.DataFrame([{
-        "timestamp": now_str(),
-        "equity": round(float(equity), 2),
-        "realized_pnl": round(float(realized_pnl), 2),
-        "trade_count": int(trade_count),
-    }])
+    return pd.DataFrame(
+        [
+            {
+                "timestamp": now_str(),
+                "equity": round(float(equity), 2),
+                "realized_pnl": round(float(realized_pnl), 2),
+                "trade_count": int(trade_count),
+            }
+        ]
+    )
 
 
 def append_equity_log(equity_file: str, new_log_df: pd.DataFrame) -> pd.DataFrame:
@@ -1100,21 +1114,26 @@ def make_report(
 
     equity = current_equity_from_trades(trades_df)
 
-    return pd.DataFrame([{
-        "run_datetime": now_str(),
-        "candidate_rows": 0 if candidates_df.empty else len(candidates_df),
-        "new_pending_orders": len(new_orders),
-        "opened_positions": len(opened_positions),
-        "closed_trades": len(closed_trades),
-        "open_positions": open_positions,
-        "pending_positions": pending_positions,
-        "equity": round(float(equity), 2),
-    }])
+    return pd.DataFrame(
+        [
+            {
+                "run_datetime": now_str(),
+                "candidate_rows": 0 if candidates_df.empty else len(candidates_df),
+                "new_pending_orders": len(new_orders),
+                "opened_positions": len(opened_positions),
+                "closed_trades": len(closed_trades),
+                "open_positions": open_positions,
+                "pending_positions": pending_positions,
+                "equity": round(float(equity), 2),
+            }
+        ]
+    )
 
 
 # =========================================================
 # DISCORD
 # =========================================================
+
 
 def format_discord_message(
     report_df: pd.DataFrame,
@@ -1140,13 +1159,17 @@ def format_discord_message(
     if new_orders:
         lines.append("NEW PENDING:")
         for x in new_orders:
-            lines.append(f"- {x['strategy']} {x['pair']} {x['side']} signal={x['signal_date']}")
+            lines.append(
+                f"- {x['strategy']} {x['pair']} {x['side']} signal={x['signal_date']}"
+            )
         lines.append("")
 
     if opened_positions:
         lines.append("OPENED:")
         for x in opened_positions:
-            lines.append(f"- {x['strategy']} {x['pair']} {x['side']} entry={x['entry_date']} price={x['entry_price']}")
+            lines.append(
+                f"- {x['strategy']} {x['pair']} {x['side']} entry={x['entry_date']} price={x['entry_price']}"
+            )
         lines.append("")
 
     if closed_trades:
@@ -1177,7 +1200,9 @@ def format_discord_message(
             sl_price = x.get("sl_price", "")
 
             if status == "PENDING":
-                lines.append(f"- PENDING {strategy} {pair} {side} signal={x.get('signal_date', '')}")
+                lines.append(
+                    f"- PENDING {strategy} {pair} {side} signal={x.get('signal_date', '')}"
+                )
             else:
                 lines.append(
                     f"- OPEN {strategy} {pair} {side} "
@@ -1223,6 +1248,7 @@ def send_discord_message(message: str) -> None:
 # PRINT HELPERS
 # =========================================================
 
+
 def print_df(title: str, df: pd.DataFrame) -> None:
     print("")
     print("========================================")
@@ -1238,6 +1264,7 @@ def print_df(title: str, df: pd.DataFrame) -> None:
 # =========================================================
 # MAIN
 # =========================================================
+
 
 def run():
     print("========================================")
@@ -1310,7 +1337,9 @@ def run():
     # 5. 表示
     print_df("DAILY REPORT", report_df)
 
-    active_positions = positions_df[positions_df["status"].isin(["PENDING", "OPEN"])].copy()
+    active_positions = positions_df[
+        positions_df["status"].isin(["PENDING", "OPEN"])
+    ].copy()
     print_df("ACTIVE POSITIONS", active_positions)
 
     if closed_trades:
