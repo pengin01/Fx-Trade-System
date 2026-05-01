@@ -170,6 +170,36 @@ REPORT_COLUMNS = [
     "equity",
 ]
 
+# =========================================================
+# COLUMN TYPE SETTINGS
+# =========================================================
+#
+# GitHub Actions上のpandasでは、空文字だけの列がfloat64として読まれることがある。
+# その状態で opened_at などへ文字列を代入すると、
+# TypeError: Invalid value 'YYYY-MM-DD HH:MM:SS' for dtype 'float64'
+# になるため、CSV読み込み時点で文字列列をobject型へ揃える。
+#
+
+STRING_COLUMNS = {
+    "status",
+    "strategy",
+    "param_name",
+    "pair",
+    "side",
+    "signal_date",
+    "entry_date",
+    "last_checked_date",
+    "opened_at",
+    "updated_at",
+    "note",
+    "exit_date",
+    "exit_reason",
+    "created_at",
+    "timestamp",
+    "run_datetime",
+}
+
+
 
 # =========================================================
 # UTILS
@@ -216,29 +246,48 @@ def get_int(row, col: str, default=0) -> int:
     return int(value)
 
 
+def normalize_csv_columns(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
+    """
+    CSV読み込み/保存前に列とdtypeを安定化する。
+
+    特にGitHub Actions上のpandasでは、空欄だけの opened_at などが
+    float64として推定され、あとから日時文字列を代入すると落ちる。
+    """
+    out = df.copy()
+
+    for col in columns:
+        if col not in out.columns:
+            if col in STRING_COLUMNS:
+                out[col] = ""
+            else:
+                out[col] = np.nan
+
+    out = out[columns].copy()
+
+    for col in columns:
+        if col in STRING_COLUMNS:
+            out[col] = out[col].replace({np.nan: ""}).astype("object")
+        else:
+            out[col] = pd.to_numeric(out[col], errors="coerce")
+
+    return out
+
+
 def read_csv_or_empty(path: str, columns: list[str]) -> pd.DataFrame:
     if not os.path.exists(path):
-        return pd.DataFrame(columns=columns)
+        return normalize_csv_columns(pd.DataFrame(), columns)
 
     try:
         df = pd.read_csv(path)
     except pd.errors.EmptyDataError:
-        return pd.DataFrame(columns=columns)
+        return normalize_csv_columns(pd.DataFrame(), columns)
 
-    for col in columns:
-        if col not in df.columns:
-            df[col] = np.nan
-
-    return df[columns].copy()
+    return normalize_csv_columns(df, columns)
 
 
 def save_csv(df: pd.DataFrame, path: str, columns: list[str] | None = None) -> None:
     if columns is not None:
-        for col in columns:
-            if col not in df.columns:
-                df[col] = np.nan
-
-        df = df[columns].copy()
+        df = normalize_csv_columns(df, columns)
 
     df.to_csv(path, index=False)
 
