@@ -5,9 +5,13 @@ on:
 
   # GitHub Actions の cron は UTC
   # JST 16:15 = UTC 07:15
+  # JST 16:45 = UTC 07:45
+  #
+  # 16:15で通常実行、16:45はGitHub Actions遅延やyfinance更新遅れ対策の保険
   schedule:
     - cron: "15 7 * * 1-5"
     - cron: "45 7 * * 1-5"
+
 permissions:
   contents: write
 
@@ -22,6 +26,7 @@ jobs:
     env:
       TZ: Asia/Tokyo
       PYTHONIOENCODING: utf-8
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     steps:
@@ -44,15 +49,21 @@ jobs:
         run: |
           test -f fx_v810_dual_daily_signal.py
           test -f fx_v811_paper_trade.py
+          test -f fx_v812_signal_diagnostics.py
 
       - name: Syntax check
         run: |
           python -m py_compile fx_v810_dual_daily_signal.py
           python -m py_compile fx_v811_paper_trade.py
+          python -m py_compile fx_v812_signal_diagnostics.py
 
       - name: Run daily signal
         run: |
           python fx_v810_dual_daily_signal.py
+
+      - name: Run signal diagnostics
+        run: |
+          python fx_v812_signal_diagnostics.py
 
       - name: Run paper trade
         run: |
@@ -61,13 +72,29 @@ jobs:
       - name: Show generated files
         run: |
           ls -la
-          echo "---- candidates ----"
+
+          echo "---- v810 candidates ----"
           test -f fx_v810_daily_candidates.csv && cat fx_v810_daily_candidates.csv || true
-          echo "---- positions ----"
+
+          echo "---- v810 summary ----"
+          test -f fx_v810_daily_summary.csv && cat fx_v810_daily_summary.csv || true
+
+          echo "---- v812 diagnostics ----"
+          test -f fx_v812_signal_diagnostics.csv && cat fx_v812_signal_diagnostics.csv || true
+
+          echo "---- v812 diagnostics summary ----"
+          test -f fx_v812_signal_diagnostics_summary.csv && cat fx_v812_signal_diagnostics_summary.csv || true
+
+          echo "---- v811 positions ----"
           test -f fx_v811_positions.csv && cat fx_v811_positions.csv || true
-          echo "---- trades ----"
+
+          echo "---- v811 trades ----"
           test -f fx_v811_trades.csv && cat fx_v811_trades.csv || true
-          echo "---- report ----"
+
+          echo "---- v811 equity ----"
+          test -f fx_v811_equity.csv && cat fx_v811_equity.csv || true
+
+          echo "---- v811 report ----"
           test -f fx_v811_daily_report.csv && cat fx_v811_daily_report.csv || true
 
       - name: Commit paper trade state
@@ -78,6 +105,8 @@ jobs:
           git add -f \
             fx_v810_daily_candidates.csv \
             fx_v810_daily_summary.csv \
+            fx_v812_signal_diagnostics.csv \
+            fx_v812_signal_diagnostics_summary.csv \
             fx_v811_positions.csv \
             fx_v811_trades.csv \
             fx_v811_equity.csv \
