@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-run_datetime,latest_data_date,row_count,pass_count,near_count,ng_count
-2026-05-07 10:58:25,2026-05-07,6,0,0,6
-=======
 run_datetime,latest_data_date,row_count,pass_count,near_count,ng_count
 2026-05-08 18:01:14,2026-05-08,6,0,1,6
 >>>>>>> 80c49c709a821894ed623fd6595051c207b04f74
