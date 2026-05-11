@@ -124,8 +124,19 @@ class RunInfo:
 # UTILS
 # =========================================================
 
-def normalize_price_df(df: pd.DataFrame, pair: str) -> pd.DataFrame:
+def fetch_pair(pair: str) -> pd.DataFrame:
+    print(f"[FETCH] {pair}")
+
+    df = yf.download(
+        pair,
+        start=START,
+        end=END,
+        auto_adjust=False,
+        progress=False,
+    )
+
     if df is None or df.empty:
+        print(f"[WARN] no data: {pair}")
         return pd.DataFrame()
 
     if isinstance(df.columns, pd.MultiIndex):
@@ -138,54 +149,9 @@ def normalize_price_df(df: pd.DataFrame, pair: str) -> pd.DataFrame:
             print(f"[WARN] missing column {col}: {pair}")
             return pd.DataFrame()
 
-    out = df[required].copy()
-    out = out.dropna()
-    out.index = pd.to_datetime(out.index).tz_localize(None)
-    out = out.sort_index()
-    out = out[~out.index.duplicated(keep="last")]
-
-    return out
-
-
-def fetch_pair(pair: str) -> pd.DataFrame:
-    print(f"[FETCH] {pair}")
-
-    # yfinanceは start 指定の長期取得で、最新1本が遅れて返ることがある。
-    # v811/v812と同じく、長期データ + 直近10日データを別々に取得してマージする。
-    long_df = yf.download(
-        pair,
-        start=START,
-        end=END,
-        auto_adjust=False,
-        progress=False,
-    )
-
-    recent_df = yf.download(
-        pair,
-        period="10d",
-        interval="1d",
-        auto_adjust=False,
-        progress=False,
-    )
-
-    long_df = normalize_price_df(long_df, pair)
-    recent_df = normalize_price_df(recent_df, pair)
-
-    if long_df.empty and recent_df.empty:
-        print(f"[WARN] no data: {pair}")
-        return pd.DataFrame()
-
-    if long_df.empty:
-        df = recent_df
-    elif recent_df.empty:
-        df = long_df
-    else:
-        df = pd.concat([long_df, recent_df])
-        df = df.sort_index()
-        df = df[~df.index.duplicated(keep="last")]
-
-    if not df.empty:
-        print(f"[LATEST] {pair}: {df.index[-1].date()} open={float(df['Open'].iloc[-1]):.6f}")
+    df = df[required].copy()
+    df = df.dropna()
+    df.index = pd.to_datetime(df.index).tz_localize(None)
 
     return df
 
