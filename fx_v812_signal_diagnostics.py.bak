@@ -284,7 +284,6 @@ def diagnose_v700_pair_side(pair: str, side: str, df: pd.DataFrame) -> dict:
         "prev_low": np.nan,
         "target_price": np.nan,
         "price_margin": np.nan,
-        "ma_margin": np.nan,
         "rsi_margin": np.nan,
         "trend_pass": False,
         "trigger_pass": False,
@@ -316,7 +315,6 @@ def diagnose_v700_pair_side(pair: str, side: str, df: pd.DataFrame) -> dict:
         rsi_pass = rsi <= V700_PARAMS["rsi_long_max"]
 
         price_margin = close - target_price
-        ma_margin = close - ma
         rsi_margin = rsi - V700_PARAMS["rsi_long_max"]
 
         if not trend_pass:
@@ -326,13 +324,7 @@ def diagnose_v700_pair_side(pair: str, side: str, df: pd.DataFrame) -> dict:
         if not rsi_pass:
             reasons.append("rsi_fail")
 
-        # 小さいほど候補に近い。
-        # ma_marginは、LONGでは close - ma がプラスならMA条件達成。
-        near_score = (
-            abs(price_margin / close)
-            + max(-ma_margin / close, 0)
-            + max(rsi_margin, 0) / 100
-        )
+        near_score = abs(price_margin / close) + max(rsi_margin, 0) / 100
 
     elif side == "SHORT":
         target_price = prev_low * (1 + V700_PARAMS["pullback_pct"])
@@ -341,7 +333,6 @@ def diagnose_v700_pair_side(pair: str, side: str, df: pd.DataFrame) -> dict:
         rsi_pass = rsi >= V700_PARAMS["rsi_short_min"]
 
         price_margin = target_price - close
-        ma_margin = ma - close
         rsi_margin = V700_PARAMS["rsi_short_min"] - rsi
 
         if not trend_pass:
@@ -351,18 +342,11 @@ def diagnose_v700_pair_side(pair: str, side: str, df: pd.DataFrame) -> dict:
         if not rsi_pass:
             reasons.append("rsi_fail")
 
-        # 小さいほど候補に近い。
-        # ma_marginは、SHORTでは ma - close がプラスならMA条件達成。
-        near_score = (
-            abs(price_margin / close)
-            + max(-ma_margin / close, 0)
-            + max(rsi_margin, 0) / 100
-        )
+        near_score = abs(price_margin / close) + max(rsi_margin, 0) / 100
 
     else:
         target_price = np.nan
         price_margin = np.nan
-        ma_margin = np.nan
         rsi_margin = np.nan
         trend_pass = False
         trigger_pass = False
@@ -395,7 +379,6 @@ def diagnose_v700_pair_side(pair: str, side: str, df: pd.DataFrame) -> dict:
         "prev_low": round_float(prev_low),
         "target_price": round_float(target_price),
         "price_margin": round_float(price_margin),
-        "ma_margin": round_float(ma_margin),
         "rsi_margin": round_float(rsi_margin),
         "trend_pass": trend_pass,
         "trigger_pass": trigger_pass,
@@ -468,7 +451,6 @@ def diagnose_v800_pair_side(pair: str, side: str, df: pd.DataFrame) -> dict:
         "prev_low": np.nan,
         "target_price": np.nan,
         "price_margin": np.nan,
-        "ma_margin": np.nan,
         "rsi_margin": np.nan,
         "trend_pass": False,
         "trigger_pass": False,
@@ -498,37 +480,30 @@ def diagnose_v800_pair_side(pair: str, side: str, df: pd.DataFrame) -> dict:
         trend_pass = close > ma
         trigger_pass = close > prev_high
         price_margin = close - prev_high
-        ma_margin = close - ma
 
         if not trend_pass:
             reasons.append("ma_fail")
         if not trigger_pass:
             reasons.append("breakout_fail")
 
-        # 小さいほど候補に近い。
-        # ma_marginは、LONGでは close - ma がプラスならMA条件達成。
-        near_score = abs(price_margin / close) + max(-ma_margin / close, 0)
+        near_score = abs(price_margin / close)
 
     elif side == "SHORT":
         target_price = prev_low
         trend_pass = close < ma
         trigger_pass = close < prev_low
         price_margin = prev_low - close
-        ma_margin = ma - close
 
         if not trend_pass:
             reasons.append("ma_fail")
         if not trigger_pass:
             reasons.append("breakout_fail")
 
-        # 小さいほど候補に近い。
-        # ma_marginは、SHORTでは ma - close がプラスならMA条件達成。
-        near_score = abs(price_margin / close) + max(-ma_margin / close, 0)
+        near_score = abs(price_margin / close)
 
     else:
         target_price = np.nan
         price_margin = np.nan
-        ma_margin = np.nan
         trend_pass = False
         trigger_pass = False
         near_score = np.nan
@@ -559,7 +534,6 @@ def diagnose_v800_pair_side(pair: str, side: str, df: pd.DataFrame) -> dict:
         "prev_low": round_float(prev_low),
         "target_price": round_float(target_price),
         "price_margin": round_float(price_margin),
-        "ma_margin": round_float(ma_margin),
         "trend_pass": trend_pass,
         "trigger_pass": trigger_pass,
         "rsi_pass": np.nan,
@@ -668,7 +642,6 @@ def print_report(diagnostics_df: pd.DataFrame, summary_df: pd.DataFrame) -> None
         "atr",
         "target_price",
         "price_margin",
-        "ma_margin",
         "rsi_margin",
         "trend_pass",
         "trigger_pass",
