@@ -1,2 +1,2 @@
 strategy,param_name,signal_date,pair,side,close,ma,rsi,prev_high,prev_low,tp_ref,sl_ref,stop_ref,entry_rule,exit_rule,position_fraction,note,pullback_pct,tp_pct,sl_pct,hold_days,rsi_long_max,rsi_short_min
-V700_RSI_PULLBACK,B_v703_more_trades,2026-05-13,GBPUSD=X,SHORT,1.351936,1.352471,51.660455,1.36047,1.346638,1.338417,1.360048,,next open,TP 0.010 / SL 0.006 / hold 9 days,1.0,paper signal only,0.003,0.01,0.006,9,40,50
+V700_RSI_PULLBACK,B_v703_more_trades,2026-05-14,GBPUSD=X,SHORT,1.351698,1.353034,54.685827,1.36047,1.346638,1.338181,1.359809,,next open,TP 0.010 / SL 0.006 / hold 9 days,1.0,paper signal only,0.003,0.01,0.006,9,40,50

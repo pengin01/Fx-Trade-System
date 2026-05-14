@@ -1,2 +1,2 @@
 status,strategy,param_name,pair,side,signal_date,entry_date,entry_price,position_fraction,initial_stop,current_stop,highest_high,lowest_low,signal_atr,tp_price,sl_price,last_checked_date,opened_at,updated_at,pullback_pct,tp_pct,sl_pct,hold_days,rsi_long_max,rsi_short_min,breakout_days,ma_days,atr_days,atr_mult,max_hold_days,note
-PENDING,V700_RSI_PULLBACK,B_v703_more_trades,GBPUSD=X,SHORT,2026-05-13,,,1.0,,,,1.350913,,,,,,2026-05-13 18:50:57,0.003,0.01,0.006,9,40,50,0,0,0,,0,created from v810 candidate
+OPEN,V700_RSI_PULLBACK,B_v703_more_trades,GBPUSD=X,SHORT,2026-05-13,2026-05-14,1.3522284030914307,1.0,,,,1.350913,,1.3387061190605163,1.3603417735099792,2026-05-14,2026-05-14 18:40:57,2026-05-14 18:40:57,0.003,0.01,0.006,9,40,50,0,0,0,,0,created from v810 candidate
