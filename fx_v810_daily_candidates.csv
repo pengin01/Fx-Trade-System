@@ -1,2 +1,2 @@
 strategy,param_name,signal_date,pair,side,close,ma,rsi,atr,prev_high,prev_low,tp_ref,sl_ref,stop_ref,entry_rule,exit_rule,position_fraction,note,breakout_days,ma_days,atr_days,atr_mult,max_hold_days
-V800_ATR_TREND,V800_fixed_usdjpy_gbpusd,2026-06-24,GBPUSD=X,SHORT,1.315859,1.340908,,0.009226,1.365784,1.316378,,,1.32693,next open,ATR trailing 1.2 / max hold 20 days,1.0,paper signal only,60,200,14,1.2,20
+V800_ATR_TREND,V800_fixed_usdjpy_gbpusd,2026-06-24,GBPUSD=X,SHORT,1.315807,1.340907,,0.009237,1.365784,1.316378,,,1.326891,next open,ATR trailing 1.2 / max hold 20 days,1.0,paper signal only,60,200,14,1.2,20
