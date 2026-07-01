@@ -1,2 +1,2 @@
 strategy,param_name,signal_date,pair,side,close,ma,rsi,atr,prev_high,prev_low,tp_ref,sl_ref,stop_ref,entry_rule,exit_rule,position_fraction,note,breakout_days,ma_days,atr_days,atr_mult,max_hold_days
-V800_ATR_TREND,V800_fixed_usdjpy_gbpusd,2026-06-30,USDJPY=X,LONG,162.343994,156.465004,,0.479783,161.955002,155.046997,,,161.768254,next open,ATR trailing 1.2 / max hold 20 days,1.0,paper signal only,60,200,14,1.2,20
+V800_ATR_TREND,V800_fixed_usdjpy_gbpusd,2026-07-01,USDJPY=X,LONG,162.679993,156.535824,,0.547927,162.651001,155.046997,,,162.022481,next open,ATR trailing 1.2 / max hold 20 days,1.0,paper signal only,60,200,14,1.2,20
