@@ -1,2 +1,2 @@
 strategy,param_name,signal_date,pair,side,close,ma,rsi,prev_high,prev_low,tp_ref,sl_ref,stop_ref,entry_rule,exit_rule,position_fraction,note,pullback_pct,tp_pct,sl_pct,hold_days,rsi_long_max,rsi_short_min
-V700_RSI_PULLBACK,B_v703_more_trades,2026-07-21,EURUSD=X,SHORT,1.142596,1.142815,51.828077,1.147026,1.135422,1.13117,1.149452,,next open,TP 0.010 / SL 0.006 / hold 9 days,1.0,paper signal only,0.003,0.01,0.006,9,40,50
+V700_RSI_PULLBACK,B_v703_more_trades,2026-07-22,EURUSD=X,SHORT,1.141553,1.142006,55.845477,1.147026,1.135422,1.130137,1.148402,,next open,TP 0.010 / SL 0.006 / hold 9 days,1.0,paper signal only,0.003,0.01,0.006,9,40,50
