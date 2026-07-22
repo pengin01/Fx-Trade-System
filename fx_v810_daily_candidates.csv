@@ -1,2 +1,3 @@
-strategy,param_name,signal_date,pair,side,close,ma,rsi,prev_high,prev_low,tp_ref,sl_ref,stop_ref,entry_rule,exit_rule,position_fraction,note,pullback_pct,tp_pct,sl_pct,hold_days,rsi_long_max,rsi_short_min
-V700_RSI_PULLBACK,B_v703_more_trades,2026-07-22,EURUSD=X,SHORT,1.141553,1.142006,55.845477,1.147026,1.135422,1.130137,1.148402,,next open,TP 0.010 / SL 0.006 / hold 9 days,1.0,paper signal only,0.003,0.01,0.006,9,40,50
+strategy,param_name,signal_date,pair,side,close,ma,rsi,prev_high,prev_low,tp_ref,sl_ref,stop_ref,entry_rule,exit_rule,position_fraction,note,pullback_pct,tp_pct,sl_pct,hold_days,rsi_long_max,rsi_short_min,atr,breakout_days,ma_days,atr_days,atr_mult,max_hold_days
+V700_RSI_PULLBACK,B_v703_more_trades,2026-07-22,EURUSD=X,SHORT,1.140641,1.141969,54.30393,1.147026,1.135422,1.129235,1.147485,,next open,TP 0.010 / SL 0.006 / hold 9 days,1.0,paper signal only,0.003,0.01,0.006,9.0,40.0,50.0,,,,,,
+V800_ATR_TREND,V800_fixed_usdjpy_gbpusd,2026-07-22,USDJPY=X,LONG,163.050995,157.485145,,163.031006,155.046997,,,162.188195,next open,ATR trailing 1.2 / max hold 20 days,1.0,paper signal only,,,,,,,0.719,60.0,200.0,14.0,1.2,20.0
