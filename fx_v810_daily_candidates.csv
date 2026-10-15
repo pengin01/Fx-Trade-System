@@ -1,3 +1,2 @@
 strategy,param_name,signal_date,pair,side,close,ma,rsi,prev_high,prev_low,tp_ref,sl_ref,stop_ref,entry_rule,exit_rule,position_fraction,note,pullback_pct,tp_pct,sl_pct,hold_days,rsi_long_max,rsi_short_min
-V700_RSI_PULLBACK,B_v703_more_trades,2026-10-15,GBPUSD=X,SHORT,1.324714,1.330455,54.086316,1.338867,1.319958,1.311467,1.332662,,next open,TP 0.010 / SL 0.006 / hold 9 days,1.0,paper signal only,0.003,0.01,0.006,9,40,50
-V700_RSI_PULLBACK,B_v703_more_trades,2026-10-15,USDJPY=X,LONG,157.934006,157.178521,39.181014,158.811005,156.014008,159.513346,156.986402,,next open,TP 0.010 / SL 0.006 / hold 9 days,1.0,paper signal only,0.003,0.01,0.006,9,40,50
+V700_RSI_PULLBACK,B_v703_more_trades,2026-10-15,GBPUSD=X,SHORT,1.324661,1.330453,54.022552,1.338867,1.319958,1.311415,1.332609,,next open,TP 0.010 / SL 0.006 / hold 9 days,1.0,paper signal only,0.003,0.01,0.006,9,40,50
