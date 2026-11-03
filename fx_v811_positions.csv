@@ -1,2 +1,2 @@
 status,strategy,param_name,pair,side,signal_date,entry_date,entry_price,position_fraction,initial_stop,current_stop,highest_high,lowest_low,signal_atr,tp_price,sl_price,last_checked_date,opened_at,updated_at,pullback_pct,tp_pct,sl_pct,hold_days,rsi_long_max,rsi_short_min,breakout_days,ma_days,atr_days,atr_mult,max_hold_days,note
-PENDING,V700_RSI_PULLBACK,B_v703_more_trades,EURUSD=X,SHORT,2026-11-02,,,1.0,,,,1.120951,,,,,,2026-11-03 02:03:29,0.003,0.01,0.006,9,40,50,0,0,0,,0,created from v810 candidate
+OPEN,V700_RSI_PULLBACK,B_v703_more_trades,EURUSD=X,SHORT,2026-11-02,2026-11-03,1.1191942691802979,1.0,,,,1.120951,,1.1080023264884948,1.1259094347953797,2026-11-03,2026-11-04 00:05:45,2026-11-04 00:05:45,0.003,0.01,0.006,9,40,50,0,0,0,,0,created from v810 candidate
